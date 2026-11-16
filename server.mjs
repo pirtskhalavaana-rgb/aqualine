@@ -11,10 +11,11 @@ const port = Number(process.env.PORT || 3000);
 const site = new URL(process.env.SITE_URL || 'http://localhost:' + port);
 const prefix = site.pathname.replace(/\/$/, '');
 const password = process.env.ADMIN_PASSWORD;
-if (!password || password.length < 16) throw Error('Set ADMIN_PASSWORD to at least 16 characters');
+
 const hash = value => createHash('sha256').update(value).digest();
 const expected = hash('Basic ' + Buffer.from('admin:' + password).toString('base64'));
 function authorize(request) {
+  if (!password || password.length < 16) return new Response("Administrator access is not configured", {status:503});
   if (timingSafeEqual(expected, hash(request.headers.get('authorization') || ''))) return null;
   return new Response('Administrator login required', {status:401, headers:{
     'WWW-Authenticate':'Basic realm="Aqualine admin", charset="UTF-8"', 'Cache-Control':'no-store'
@@ -53,7 +54,10 @@ for (const file of ['style.css','measure.js','analytics-config.js', ...readdirSy
 }
 const server = http.createServer(async (incoming,outgoing) => {
   try {
-    const url = new URL(incoming.url,site.origin);
+    const host = incoming.headers.host?.toLowerCase();
+    const campaignHosts = ["aqualine-blackfriday.web-hoster.app", "aqualine-water-technologies.ge", "www.aqualine-water-technologies.ge"];
+    const origin = campaignHosts.includes(host) ? "https://" + host : site.origin;
+    const url = new URL(incoming.url,origin);
     if (prefix && url.pathname === prefix) {
       outgoing.writeHead(308,{location:prefix+'/'+url.search});return outgoing.end();
     }
