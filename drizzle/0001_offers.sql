@@ -1,0 +1,1 @@
+CREATE TABLE offers(id TEXT PRIMARY KEY, category TEXT NOT NULL, model TEXT NOT NULL, previous REAL NOT NULL, current REAL NOT NULL);
