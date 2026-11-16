@@ -29,7 +29,7 @@ jobs:
           DIR="$WEBHOSTER_DIR"
           echo "MODE=static" >> $GITHUB_ENV
           # Next.js (or another Node server app with a start script) without a static export: ship the built app, the server runs it
-          if [ -z "$DIR" ] && [ -f package.json ] && [ ! -d out ] && { [ -d .next ] || grep -q '"start"' package.json && [ ! -d dist ] && [ ! -d build ]; } && grep -q '"start"' package.json; then
+          if [ -z "$DIR" ] && [ -f server.mjs ] && [ -f package.json ]; then
             echo "MODE=node" >> $GITHUB_ENV
             zip -qr /tmp/site.zip . -x '.git/*' 'node_modules/*' '.github/*' '.env*' '.next/cache/*'
             exit 0
