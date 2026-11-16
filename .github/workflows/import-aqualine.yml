@@ -1,0 +1,30 @@
+name: Import Aqualine source
+on:
+  push:
+    branches: [main]
+    paths: ['.github/workflows/import-aqualine.yml']
+permissions:
+  contents: write
+jobs:
+  import:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Expand verified archive
+        run: |
+          set -eu
+          test -f Aqualine-Codex.zip || exit 0
+          echo '2e070b277cbf9ccaec4ef306ad344061d50a420a4f9ac9be1fc23efce1de024d  Aqualine-Codex.zip' | sha256sum -c -
+          unzip -q Aqualine-Codex.zip -d "$RUNNER_TEMP/import"
+          cd "$RUNNER_TEMP/import/Aqualine"
+          while IFS= read -r -d '' file; do
+            if [[ -e "$GITHUB_WORKSPACE/$file" ]]; then cmp "$file" "$GITHUB_WORKSPACE/$file"; fi
+          done < <(find . -type f -print0)
+          cp -a . "$GITHUB_WORKSPACE/"
+          cd "$GITHUB_WORKSPACE"
+          git rm Aqualine-Codex.zip
+          git add --all
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git commit -m 'Import Aqualine landing page and assets'
+          git push origin HEAD:main
