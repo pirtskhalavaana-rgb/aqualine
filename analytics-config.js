@@ -4,7 +4,10 @@ if (/^G-[A-Z0-9]+$/.test(measurementId)) {
   window.dataLayer = window.dataLayer || [];
   function gtag() { window.dataLayer.push(arguments); }
   gtag('js', new Date());
-  gtag('config', measurementId);
+  // GTM already owns the automatic page_view. This lightweight direct tag is
+  // only here to deliver the named interaction events below without creating
+  // a duplicate page view.
+  gtag('config', measurementId, { send_page_view: false });
   const tag = document.createElement('script');
   tag.async = true;
   tag.src = 'https://www.googletagmanager.com/gtag/js?id=' + measurementId;

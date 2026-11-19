@@ -31,12 +31,13 @@
    ...details,
    event:eventName
   };
+  // Keep the structured object for GTM triggers and also send the event
+  // directly to the live GA4 stream. The latter makes these event names
+  // available even when a GTM workspace has no matching custom-event tag.
   window.dataLayer.push(payload);
-  if(eventName!=='button_click'){
-   const ga4Payload={...payload,send_to:'G-JXNCF1CELC'};
-   delete ga4Payload.event;
-   (function(){window.dataLayer.push(arguments)})('event',eventName,ga4Payload);
-  }
+  const ga4Payload={...payload};
+  delete ga4Payload.event;
+  if(typeof window.gtag==='function')window.gtag('event',eventName,ga4Payload);
  };
 
  document.addEventListener('click',(event)=>{
