@@ -37,7 +37,7 @@
   window.dataLayer.push(payload);
   const ga4Payload={...payload};
   delete ga4Payload.event;
-  if(typeof window.gtag==='function')window.gtag('event',eventName,ga4Payload);
+  if(typeof window.gtag==='function')window.gtag('event',eventName,{...ga4Payload,transport_type:'beacon'});
  };
 
  document.addEventListener('click',(event)=>{

@@ -1,5 +1,8 @@
 // Set this to the GA4 web stream Measurement ID to enable the Google tag.
-const measurementId = 'G-JXNCF1CELC';
+// This is the Measurement ID of the active "Black Friday Aqualine" GA4
+// property (564804096). The older G-JX... stream belongs to the duplicate
+// property and must not receive campaign interaction events.
+const measurementId = 'G-N37MCE3KYW';
 if (/^G-[A-Z0-9]+$/.test(measurementId)) {
   window.dataLayer = window.dataLayer || [];
   window.gtag = window.gtag || function gtag() { window.dataLayer.push(arguments); };
