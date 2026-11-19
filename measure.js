@@ -47,12 +47,13 @@
   const clickUrl=absoluteUrl(href);
   const base={button_text:labelFor(target),click_url:clickUrl};
   const branch=target.closest('#branches .city');
+  const branchEventName=target.dataset.trackEvent;
 
   track('button_click',base);
   if(/^tel:/i.test(href)){
    track('phone_click',base);
-  }else if(branch){
-   track('branch_map_click',{
+  }else if(branchEventName){
+   track(branchEventName,{
     ...base,
     branch_city:cleanText(branch.querySelector('h3')?.textContent),
     branch_address:cleanText(branch.querySelector('.address')?.textContent)
