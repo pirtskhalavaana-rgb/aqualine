@@ -46,10 +46,17 @@
   const href=target.getAttribute('href')||target.dataset.url||'';
   const clickUrl=absoluteUrl(href);
   const base={button_text:labelFor(target),click_url:clickUrl};
+  const branch=target.closest('#branches .city');
 
   track('button_click',base);
   if(/^tel:/i.test(href)){
    track('phone_click',base);
+  }else if(branch){
+   track('branch_map_click',{
+    ...base,
+    branch_city:cleanText(branch.querySelector('h3')?.textContent),
+    branch_address:cleanText(branch.querySelector('.address')?.textContent)
+   });
   }else if(/^https?:/i.test(clickUrl)&&new URL(clickUrl).origin!==location.origin){
    track('outbound_click',{...base,link_domain:new URL(clickUrl).hostname});
   }
